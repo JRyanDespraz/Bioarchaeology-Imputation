@@ -1,0 +1,35 @@
+#PCA/MCA imputation
+library(missMDA)
+set.seed(99)
+
+#For PCA
+#Calculate the number of components
+#PCA is for quantitative data, therefore it is necessary to specify where in the dataset the quantitative data is located
+ncp.PCA <- estim_ncpPCA(dataset[])
+
+#Impute
+pca.imputed <- imputePCA(as.matrix(dataset[]), ncp = ncp.PCA$ncp, scale = TRUE, maxiter = 1000)
+#scale = TRUE gives the same weight to each variable
+
+#get the matrix with $completeObs
+pca.imputed.final <- pca.imputed$completeObs
+
+#same process for MCA as for PCA, specify where in the datast the categorical data is located
+ncp.MCA <- estim_ncpMCA(dataset[])
+mca.imputed <- imputeMCA(as.matrix(dataset[]), ncp = ncp.MCA$ncp, maxiter = 1000)
+mca.imputed.final <- mca.imputed$completeObs
+
+#Combine the PCA and MCA imputed datasets
+PCA_MCA_combined <- cbind(mca.imputed.final, pca.imputed.final)
+
+
+# Calculations used for comparing an imputed dataset to an original dataset
+library(missMethods)
+# These calculations are only for categorical data, therefore these rows/columns need to be specified
+categ.precision <- evaluate_imputed_values(imputed_dataset[], original[], criterion = "precision")
+nr_equal <- evaluate_imputed_values(imputed_dataset[], original[], criterion = "nr_equal")
+res.MAE <- evaluate_imputed_values(imputed_dataset[], original[], criterion = "MAE")
+
+# These calculations are only for quantitative data, therefore these rows/columns need to be specified
+NRMSE_col_mean_sq <- evaluate_imputed_values(imputed_dataset[], original[], criterion = "NRMSE_col_mean_sq")
+NRMSE_tot_sd <- evaluate_imputed_values(imputed_dataset[], original[], criterion = "NRMSE_tot_sd") 
