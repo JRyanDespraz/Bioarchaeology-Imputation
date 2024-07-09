@@ -5,10 +5,10 @@ library(missMDA)
 
 #Step 1: calculate the number of components
 #make sure R is reading the categorical variables as factors and the quantitative variables as numeric
-ncp.FAMD <- estim_ncpFAMD(dataset)
+ncp.FAMD <- estim_ncpFAMD(original_dataset)
 
 #Step 2: Impute
-imputed_FAMD <- imputeFAMD(dataset, ncp = ncp.FAMD$ncp, seed = 99, maxiter = 1000)
+imputed_FAMD <- imputeFAMD(original_dataset, ncp = ncp.FAMD$ncp, seed = 99, maxiter = 1000)
 
 #get the matrix with $completeObs
 final_imputed_dataset <- imputed_FAMD$completeObs
