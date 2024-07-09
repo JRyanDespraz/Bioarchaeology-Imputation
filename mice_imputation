@@ -1,10 +1,13 @@
-##PMM and RSOV imputation
+#################PMM and RSOV imputation##########
+#https://cran.r-project.org/web/packages/mice/index.html
+
 ##Perform imputations using MICE
 ##set "m" equal to the number of imputations desired 
 ##set "meth" equal to either "pmm" or "sample" (RSOV), see documentation for other possible methods
 ##Ryan-Despraz and Wissler (2024) set the number of maximum iterations to 50
+
 library(mice)
-PMM_imputed <- mice(dataset, m=, maxit=, meth=, seed=99) 
+PMM_imputed <- mice(original_dataset, m=, maxit=, meth=, seed=99) 
 
 ##Obtain complete dataset
 pmm.complete <- complete(PMM_imputed)
@@ -49,17 +52,7 @@ library(mice)
 imputation_methods <- c("lasso.select.logreg", "polyreg", "polr", "lasso.select.norm")
 
 #This method also uses mice, therefore the above criteria (e.g. for multiple imputations) used for PMM and RSOV also applies here
-multi.method.imputed <- mice(dataset, m=, maxit=, method = imputation_methods,  seed=99)
+multi.method.imputed <- mice(original_dataset, m=, maxit=, method = imputation_methods,  seed=99)
   
 
-#--------------------------------------------------------------
-# Calculations used for comparing an imputed dataset to an original dataset
-library(missMethods)
-# These calculations are only for categorical data, therefore these rows/columns need to be specified
-categ.precision <- evaluate_imputed_values(imputed_dataset[], original[], criterion = "precision")
-nr_equal <- evaluate_imputed_values(imputed_dataset[], original[], criterion = "nr_equal")
-res.MAE <- evaluate_imputed_values(imputed_dataset[], original[], criterion = "MAE")
 
-# These calculations are only for quantitative data, therefore these rows/columns need to be specified
-NRMSE_col_mean_sq <- evaluate_imputed_values(imputed_dataset[], original[], criterion = "NRMSE_col_mean_sq")
-NRMSE_tot_sd <- evaluate_imputed_values(imputed_dataset[], original[], criterion = "NRMSE_tot_sd") 
