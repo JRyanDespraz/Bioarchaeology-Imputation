@@ -3,6 +3,8 @@
 
 library(missMethods)
 
+original_dataset <- read.csv('original_dataset.csv')
+
 # These calculations are for categorical data, therefore the rows/columns with categorical data need to be specified
 categ.precision <- evaluate_imputed_values(imputed_dataset[], original_dataset[], criterion = "precision")
 nr_equal <- evaluate_imputed_values(imputed_hotdeck[], original_dataset[], criterion = "nr_equal")
