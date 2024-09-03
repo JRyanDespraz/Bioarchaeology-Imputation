@@ -1,58 +1,64 @@
 #################PMM and RSOV imputation##########
+
+####Step 1: Load the dataset containing missingness
+# Load the necessary library
+library(readr)
+
+# Load the dataset containing missingness with semicolon-separated columns and decimal points
+dataset_with_missingness <- read_delim("MAR_10percent_missingness.csv", delim = ";", locale = locale(decimal_mark = "."))
+
+# Set data types
+dataset_with_missingness[, 1:7] <- lapply(dataset_with_missingness[, 1:7], as.factor)
+dataset_with_missingness$AgeGroup <- factor(dataset_with_missingness$AgeGroup, ordered = TRUE, levels = c("1", "2", "3", "4", "5"))
+dataset_with_missingness[, 9:13] <- lapply(dataset_with_missingness[, 9:13], factor, ordered = TRUE, levels = c("0", "0.5", "1", "2", "3"))
+dataset_with_missingness[, 14:41] <- lapply(dataset_with_missingness[, 14:41], as.numeric)
+
+
+####Step 2: Perform the imputation
+#load the necessary library
 #https://cran.r-project.org/web/packages/mice/index.html
-
-##Perform imputations using MICE
-##set "m" equal to the number of imputations desired 
-##set "meth" equal to either "pmm" or "sample" (RSOV), see documentation for other possible methods
-##Ryan-Despraz and Wissler (2024) set the number of maximum iterations to 50
-
 library(mice)
-PMM_imputed <- mice(original_dataset, m=, maxit=, meth=, seed=99) 
+
+#set "m" equal to the number of imputations desired 
+#set "meth" equal to either "pmm" or "sample" (RSOV), see documentation for other possible methods
+mice_imputed <- mice(dataset_with_missingness, m=10, maxit=50, meth="pmm", seed=99) 
 
 ##Obtain complete dataset
-pmm.complete <- complete(PMM_imputed)
-
-##For multiple imputations, this needs to be calculated for each imputation. For example, if "m=5":
-#complete1 <- complete(PMM_imputed, 1)
-#complete2 <- complete(PMM_imputed, 2)
-#complete3 <- complete(PMM_imputed, 3)
-#complete4 <- complete(PMM_imputed, 4)
-#complete5 <- complete(PMM_imputed, 5)
-
-##for the quantitative data, calculate the average to achieve one final, complete dataset
-#pmm_quant_dataframe <- (complete1[] + complete2[] + complete3[] + complete4[] + complete5[])/5
-
-##for the qualitative data, calculate the mode 
-#find_mode <- function(x) {
-#  u <- unique(x)
-#  tab <- tabulate(match(x, u))
-#  m = u[tab == max(tab)]
-#  if (length(m)>1) {
-#    return (sample(m, size=1))
-#  }
-#  return (m)
-#}
-
-##an example for calculating the mode of each column: 
-#for (x in 1:481){
-#sex.mode <- find_mode(c(complete1$Sex[x], complete2$Sex[x], complete3$Sex[x], complete4$Sex[x], complete5$Sex[x]))
-#}
-##then combine into a dataframe, for example:
-#colnames(categ_df) <- c("Column1", "Column2", "Column3")
-
-##combine the quantitative and qualitative datasets, for example:
-#final_dataset <- cbind(unordered_data, ordered_data, binary_data, pmm_quant_dataframe)
+mice.complete <- complete(mice_imputed)
 
 
-#----------------------------------------
-#Multi-method imputation using MICE
+####Step 3: If desired, combine the imputed datasets (m) into a single, master dataset based on the mode of categorical variables and the mean of numeric variables
+#Please note that combining the datasets is not necessarily advised for statistical analyses. Ryan-Despraz and Wissler (2024) combined the datasets in order to compare imputation methods, not for data analysis
+# Load necessary libraries
+library(dplyr)
 library(mice)
 
-#Assuming columns are variables, set the desired imputation method for each column based on data type. For example (using the four methods used by Ryan-Despraz and Wissler (2024)): 
-imputation_methods <- c("lasso.select.logreg", "polyreg", "polr", "lasso.select.norm")
+# Function to calculate mode
+get_mode <- function(v) {
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
 
-#This method also uses mice, therefore the above criteria (e.g. for multiple imputations) used for PMM and RSOV also applies here
-multi.method.imputed <- mice(original_dataset, m=, maxit=, method = imputation_methods,  seed=99)
+# Initialize an empty data frame to store the final dataset
+final_mice_imputed_dataset <- data.frame(matrix(ncol = ncol(mice.complete), nrow = nrow(mice.complete)))
+
+# Loop through each column to calculate mode for categorical and mean for numeric
+for (i in 1:ncol(mice.complete)) {
+  if (i <= 13) {
+    # Calculate mode for categorical variables across all imputations
+    modes <- apply(sapply(1:5, function(m) complete(mice_imputed, m)[, i]), 1, get_mode)
+    final_mice_imputed_dataset[, i] <- modes
+  } else {
+    # Calculate mean for numeric variables across all imputations
+    means <- rowMeans(sapply(1:5, function(m) complete(mice_imputed, m)[, i]), na.rm = TRUE)
+    final_mice_imputed_dataset[, i] <- means
+  }
+}
+
+# Set column names
+colnames(final_mice_imputed_dataset) <- colnames(mice.complete)
+
+
   
 
 
