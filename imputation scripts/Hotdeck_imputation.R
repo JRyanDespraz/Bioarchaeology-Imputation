@@ -20,6 +20,6 @@ library(VIM)
 
 #Step 3: Perform the imputation
 set.seed(99)
-imputed_hotdeck <- hotdeck(original_dataset, imp_var = FALSE)
+imputed_hotdeck <- hotdeck(dataset_with_missingness, imp_var = FALSE)
 
 
