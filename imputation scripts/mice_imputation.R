@@ -5,6 +5,7 @@
 library(readr)
 
 # Load the dataset containing missingness with semicolon-separated columns and decimal points
+# Dataset: here we use the example dataset "MAR_10percent_missingness.csv" from the publication, which is available in the "data" folder
 dataset_with_missingness <- read_delim("MAR_10percent_missingness.csv", delim = ";", locale = locale(decimal_mark = "."))
 
 # Set data types
@@ -23,8 +24,10 @@ library(mice)
 #set "meth" equal to either "pmm" or "sample" (RSOV), see documentation for other possible methods
 mice_imputed <- mice(dataset_with_missingness, m=10, maxit=50, meth="pmm", seed=99) 
 
-##Obtain complete dataset
+#Obtain complete datasets
 mice.complete <- complete(mice_imputed)
+
+#The above example generates 10 imputed datasets. To view a specific dataset, for example the 3rd imputed dataset, use code, "complete(mice_imputed, 3)"
 
 
 ####Step 3: If desired, combine the imputed datasets (m) into a single, master dataset based on the mode of categorical variables and the mean of numeric variables
