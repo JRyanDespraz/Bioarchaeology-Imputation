@@ -24,6 +24,7 @@ set.seed(99)
 dataset_with_missingness <- as.data.frame(dataset_with_missingness)
 
 # Perform random forest imputation
+# "ntree" is set to the number of variables
 imputed_rf_dataset <- missForest(dataset_with_missingness, maxiter = 10, ntree = 41, verbose=TRUE)
 
 # Extract the imputed data
