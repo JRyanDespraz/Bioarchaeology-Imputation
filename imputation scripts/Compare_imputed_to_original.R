@@ -1,6 +1,4 @@
 ###### Calculations used for comparing an imputed dataset to an original dataset ##################
-#https://cran.r-project.org/web/packages/missMethods/index.html
-library(missMethods)
 
 #Step 1: Load the original and imputed datasets
 # Load the necessary library
@@ -16,6 +14,7 @@ original_dataset[, 9:13] <- lapply(original_dataset[, 9:13], factor, ordered = T
 original_dataset[, 14:41] <- lapply(original_dataset[, 14:41], as.numeric)
 
 # Load the dataset containing missingness with semicolon-separated columns and decimal points
+# The dataset in this example can be found in the "Data" folder
 dataset_with_missingness <- read_delim("MAR_10percent_missingness.csv", delim = ";", locale = locale(decimal_mark = "."))
 
 # Set data types
