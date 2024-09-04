@@ -39,8 +39,8 @@ for (col in names(dataset_with_missingness)) {
 ncp.FAMD <- estim_ncpFAMD(dataset_with_missingness)
 
 #Step 4: Impute
-imputed_FAMD <- imputeFAMD(original_dataset, ncp = ncp.FAMD$ncp, seed = 99, maxiter = 1000)
+imputed_FAMD <- imputeFAMD(dataset_with_missingness, ncp = ncp.FAMD$ncp, seed = 99, maxiter = 1000)
 
 #get the final imputed matrix with $completeObs
-final_imputed_dataset <- imputed_FAMD$completeObs
+final_famd_imputed_dataset <- imputed_FAMD$completeObs
 
