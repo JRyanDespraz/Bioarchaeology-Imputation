@@ -1,4 +1,4 @@
-These two folders contain the datasets (1 original and 15 with simulated missingness: MCAR, MAR, and MNAR at 5%, 10%, 20%, 30%, and 40% missingness) and imputation codes used for the imputation tests in Ryan-Despraz and Wissler, 2024. "Imputation Methods for Mixed Datasets in Bioarchaeology". 
+These two folders contain the datasets (1 original and 15 with simulated missingness: MCAR, MAR, and MNAR at 5%, 10%, 20%, 30%, and 40% missingness) and imputation scripts used for the imputation tests in Ryan-Despraz and Wissler, 2024. "Imputation Methods for Mixed Datasets in Bioarchaeology". The folder "imputation scripts" also includes a script for comparing original values to imputed values. 
 
 Analyses in the publication used R version 4.3.1
 The following codes use default settings for basic precision testing. Please read each package's documentation for additional arguments that could be applicable to other datasets and analysis objectives.
